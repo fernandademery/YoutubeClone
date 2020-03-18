@@ -13,6 +13,8 @@ function UploadVideoPage() {
   const [Privacy, setPrivacy] = useState(0);
   const [Category, setCategory] = useState("Film & Animation");
   const [FilePath, setFilePath] = useState("");
+  const [Duration, setDuration] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
 
   const handleChangeTitle = event => {
     setTitle(event.currentTarget.value);
@@ -49,6 +51,15 @@ function UploadVideoPage() {
           fileName: response.data.fileName
         };
         setFilePath(response.data.filePath);
+
+        axios.post("api/video/thumbnail", variable).then(response => {
+          if (response.data.success) {
+            setDuration(response.data.fileDuration);
+            setThumbnail(response.data.thumbsFilePath);
+          } else {
+            alert("Failed to create thumbnail");
+          }
+        });
       } else {
         alert("Failed to save the video in server!");
       }
@@ -98,11 +109,11 @@ function UploadVideoPage() {
             )}
           </Dropzone>
 
-          {/* {thumbnail !== "" &&
-        <div>
-            <img src={`http://localhost:5000/${thumbnail}`} alt="haha" />
-             </div> 
-            } */}
+          {thumbnail !== "" && (
+            <div>
+              <img src={`http://localhost:5000/${thumbnail}`} alt="haha" />
+            </div>
+          )}
         </div>
         <br /> <br />
         <label>Title</label>
