@@ -52,7 +52,7 @@ function UploadVideoPage() {
         };
         setFilePath(response.data.filePath);
 
-        axios.post("api/video/thumbnail", variable).then(response => {
+        axios.post("/api/video/thumbnail", variable).then(response => {
           if (response.data.success) {
             setDuration(response.data.fileDuration);
             setThumbnail(response.data.thumbsFilePath);
@@ -73,13 +73,13 @@ function UploadVideoPage() {
 
   const categories = [
     { value: 0, label: "Film & Animation" },
-    { value: 1, label: "Autos & Vehicles" },
-    { value: 2, label: "Music" },
-    { value: 3, label: "Pets & Animals" },
-    { value: 4, label: "Sports" },
-    { value: 5, label: "Beauty & MakeUp" },
-    { value: 6, label: "Do it Yourself" },
-    { value: 7, label: "Pop Culture" }
+    { value: 0, label: "Autos & Vehicles" },
+    { value: 0, label: "Music" },
+    { value: 0, label: "Pets & Animals" },
+    { value: 0, label: "Sports" },
+    { value: 0, label: "Beauty & MakeUp" },
+    { value: 0, label: "Do it Yourself" },
+    { value: 0, label: "Pop Culture" }
   ];
 
   return (

@@ -73,7 +73,7 @@ router.post("/thumbnail", (req, res) => {
     })
     .screenshots({
       count: 3,
-      folder: "/uploads/thumbnails",
+      folder: "uploads/thumbnails",
       size: "320x240",
       // %b means input basename which is the file name without the extension.
       filename: "thumbnail-%b.png"
