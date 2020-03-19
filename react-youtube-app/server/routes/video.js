@@ -3,15 +3,19 @@ const router = express.Router();
 const multer = require("multer");
 var ffmpeg = require("fluent-ffmpeg");
 
-const { User } = require("../models/User");
+const {
+  Video
+} = require("../models/Video");
 
-const { auth } = require("../middleware/auth");
+const {
+  auth
+} = require("../middleware/auth");
 
 var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, "uploads/");
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     cb(null, `${Date.now()}_${file.originalname}`);
   },
   fileFilter: (req, file, cb) => {
@@ -51,7 +55,7 @@ router.post("/thumbnail", (req, res) => {
   let thumbsFilePath = "";
   let fileDuration = "";
 
-  ffmpeg.ffprobe(req.body.filePath, function(err, metadata) {
+  ffmpeg.ffprobe(req.body.filePath, function (err, metadata) {
     console.dir(metadata);
     console.log(metadata.format.duration);
 
@@ -59,11 +63,11 @@ router.post("/thumbnail", (req, res) => {
   });
 
   ffmpeg(req.body.filePath)
-    .on("filenames", function(filenames) {
+    .on("filenames", function (filenames) {
       console.log("Will generate " + filenames.join(", "));
       thumbsFilePath = "uploads/thumbnails/" + filenames[0];
     })
-    .on("end", function() {
+    .on("end", function () {
       console.log("Screenshots taken");
       return res.json({
         success: true,
@@ -79,5 +83,20 @@ router.post("/thumbnail", (req, res) => {
       filename: "thumbnail-%b.png"
     });
 });
+
+router.post("/uploadVideo", (req, res) => {
+  const video = new Video(req.body)
+
+  video.save((err, video) => {
+    if (err) return res.status(400).json({
+      success: false,
+      err
+    })
+    return res.status(200).json({
+      success: true
+    })
+  })
+});
+
 
 module.exports = router;

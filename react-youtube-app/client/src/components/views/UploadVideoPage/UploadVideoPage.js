@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Typography, Button, Form, message, Input, Icon } from "antd";
 import Dropzone from "react-dropzone";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const { Title } = Typography;
 const { TextArea } = Input;
 
-function UploadVideoPage() {
+function UploadVideoPage(props) {
+  const user = useSelector(state => state.user);
+
   const [title, setTitle] = useState("");
   const [Description, setDescription] = useState("");
   // To toggle privacy of the videos, use 0 for private and 1 for public.
@@ -33,7 +36,46 @@ function UploadVideoPage() {
     setCategory(event.currentTarget.value);
   };
 
-  const onSubmit = () => {};
+  const onSubmit = event => {
+    event.preventDefault();
+
+    if (user.userData && !user.userData.isAuth) {
+      return alert("Please log in before submitting video!");
+    }
+
+    if (
+      title === "" ||
+      Description === "" ||
+      Category === "" ||
+      FilePath === "" ||
+      Duration === "" ||
+      thumbnail === ""
+    ) {
+      return alert("Please, fill all the fields before submitting the video!");
+    }
+
+    const variables = {
+      // For the writer (which is who is posting the video) we access the state to use the user's data.
+      writer: user.userData._id,
+      // For all the other info, we access the state that we crated using setState.
+      title: title,
+      description: Description,
+      privacy: Privacy,
+      filePath: FilePath,
+      category: Category,
+      duration: Duration,
+      thumbnail: thumbnail
+    };
+
+    axios.post("/api/video/uploadVideo", variables).then(response => {
+      if (response.data.success) {
+        alert("Video Uploaded Successfully!");
+        props.history.push("/");
+      } else {
+        alert("Failed to upload video!");
+      }
+    });
+  };
 
   const onDrop = files => {
     let formData = new FormData();
